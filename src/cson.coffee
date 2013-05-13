@@ -100,10 +100,10 @@ module.exports =
     null
 
   readObjectSync: (objectPath) ->
-    parseObject(objectPath, fs.readFileSync(objectPath, {encoding: 'utf8'}))
+    parseObject(objectPath, fs.readFileSync(objectPath, 'utf8'))
 
   readObject: (objectPath, callback) ->
-    fs.readFile objectPath, {encoding: 'utf8'}, (error, contents) =>
+    fs.readFile objectPath, 'utf8', (error, contents) =>
       if error?
         callback?(error)
       else
