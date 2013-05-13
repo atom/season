@@ -88,6 +88,17 @@ module.exports =
     extension = path.extname(objectPath)
     extension is '.cson' or extension is '.json'
 
+  resolveObjectPath: (objectPath) ->
+    return objectPath if @isObjectPath(objectPath) and fs.existsSync(objectPath)
+
+    csonPath = "#{objectPath}.cson"
+    return csonPath if @isObjectPath(csonPath) and fs.existsSync(csonPath)
+
+    jsonPath = "#{objectPath}.json"
+    return jsonPath if @isObjectPath(jsonPath) and fs.existsSync(jsonPath)
+
+    null
+
   readObjectSync: (objectPath) ->
     parseObject(objectPath, fs.readFileSync(objectPath, {encoding: 'utf8'}))
 

@@ -1,3 +1,6 @@
+path = require 'path'
+fs = require 'fs'
+temp = require 'temp'
 CSON = require '../lib/cson'
 
 describe "CSON", ->
@@ -99,3 +102,18 @@ describe "CSON", ->
       expect(CSON.isObjectPath(null)).toBe false
       expect(CSON.isObjectPath('')).toBe false
       expect(CSON.isObjectPath('a/b/c.txt')).toBe false
+
+  describe ".resolveObjectPath(objectPath)", ->
+    it "returns the path to the object file", ->
+      objectDir = temp.mkdirSync('season-object-dir-')
+      file1 = path.join(objectDir, 'file1.json')
+      file2 = path.join(objectDir, 'file2.cson')
+      file3 = path.join(objectDir, 'file3.json')
+      fs.writeFileSync(file1, '{}')
+      fs.writeFileSync(file2, '{}')
+      fs.writeFileSync(file3, '{}')
+
+      expect(CSON.resolveObjectPath(file1)).toBe file1
+      expect(CSON.resolveObjectPath(path.join(objectDir, 'file2'))).toBe file2
+      expect(CSON.resolveObjectPath(path.join(objectDir, 'file3'))).toBe file3
+      expect(CSON.resolveObjectPath(path.join(objectDir, 'file4'))).toBe null
