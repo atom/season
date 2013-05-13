@@ -92,14 +92,14 @@ module.exports =
     parseObject(objectPath, fs.readFileSync(objectPath, {encoding: 'utf8'}))
 
   readObject: (objectPath, callback) ->
-    fs.readFile objectPath, {encoding: 'utf8'}, (err, contents) =>
+    fs.readFile objectPath, {encoding: 'utf8'}, (error, contents) =>
       if error?
         callback?(error)
       else
         try
           callback?(null, parseObject(objectPath, contents))
-        catch err
-          callback?(err)
+        catch parseError
+          callback?(parseError)
 
   writeObjectSync: (objectPath, object) ->
     if path.extname(objectPath) is '.cson'
