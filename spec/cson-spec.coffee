@@ -79,12 +79,12 @@ describe "CSON", ->
   describe "when converting back to an object", ->
     it "produces the original object", ->
       object =
-        showInvisibles: true
-        fontSize: 20
-        core:
-          themes: ['a', 'b']
-        whitespace:
-          ensureSingleTrailingNewline: true
+        a: true
+        b: 20
+        c:
+          d: ['a', 'b']
+        e:
+          f: true
 
       cson = CSON.stringify(object)
       CoffeeScript = require 'coffee-script'
