@@ -97,7 +97,7 @@ module.exports =
         callback?(error)
       else
         try
-          callback?(null, @parseObject(objectPath, contents))
+          callback?(null, parseObject(objectPath, contents))
         catch err
           callback?(err)
 
