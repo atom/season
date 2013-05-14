@@ -21,7 +21,7 @@ module.exports = (argv=[]) ->
   try
     object = CSON.readFileSync(inputFile)
   catch e
-    console.error("File does not contain valid CoffeeScript: #{inputFile}")
+    console.error("Parsing #{inputFile} failed:", e.message)
     process.exit(1)
 
   CSON.writeFileSync(outputFile, object)
