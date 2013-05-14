@@ -77,7 +77,7 @@ stringifyObject = (object, indentLevel=0) ->
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
     CoffeeScript = require 'coffee-script'
-    CoffeeScript.eval(contents, {bare: true})
+    CoffeeScript.eval(contents, {bare: true, sandbox: true})
   else
     JSON.parse(contents)
 
