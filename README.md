@@ -28,7 +28,7 @@ Convert the object to a CSON string.
 
 Returns the CSON string representation of the given object.
 
-### CSON.readObject(objectPath, callback)
+### CSON.readFile(objectPath, callback)
 
 Read the CSON or JSON object at the given path and return it to the callback
 once it is read and parsed.
@@ -38,7 +38,7 @@ once it is read and parsed.
 `callback` - The callback to call with the error or object once the path
              is read and parsed.
 
-### CSON.writeObjectSync(objectPath, object)
+### CSON.writeFileSync(objectPath, object)
 
 Write the object to the given path as either JSON or CSON depending on the
 path's extension.

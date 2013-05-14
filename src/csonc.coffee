@@ -19,9 +19,9 @@ module.exports = (argv=[]) ->
     process.exit(1)
     return
 
-  object = CSON.readObjectSync(inputFile)
+  object = CSON.readFileSync(inputFile)
   if _.isObject(object)
-    CSON.writeObjectSync(outputFile, object)
+    CSON.writeFileSync(outputFile, object)
   else
     console.error("Input file does not contain an object: #{inputFile}")
     process.exit(1)

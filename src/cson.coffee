@@ -88,7 +88,7 @@ module.exports =
     extension = path.extname(objectPath)
     extension is '.cson' or extension is '.json'
 
-  resolveObjectPath: (objectPath) ->
+  resolve: (objectPath) ->
     return objectPath if @isObjectPath(objectPath) and fs.existsSync(objectPath)
 
     csonPath = "#{objectPath}.cson"
@@ -99,10 +99,10 @@ module.exports =
 
     null
 
-  readObjectSync: (objectPath) ->
+  readFileSync: (objectPath) ->
     parseObject(objectPath, fs.readFileSync(objectPath, 'utf8'))
 
-  readObject: (objectPath, callback) ->
+  readFile: (objectPath, callback) ->
     fs.readFile objectPath, 'utf8', (error, contents) =>
       if error?
         callback?(error)
@@ -112,7 +112,7 @@ module.exports =
         catch parseError
           callback?(parseError)
 
-  writeObjectSync: (objectPath, object) ->
+  writeFileSync: (objectPath, object) ->
     if path.extname(objectPath) is '.cson'
       content = @stringify(object)
     else
