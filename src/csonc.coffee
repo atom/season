@@ -15,9 +15,8 @@ module.exports = (argv=[]) ->
   if outputFile?.length > 0
     outputFile = path.resolve(process.cwd(), outputFile)
   else
-    console.error("Output file must be second argument")
-    process.exit(1)
-    return
+    outputName = "#{path.basename(inputFile, path.extname(inputFile))}.json"
+    outputFile = path.join(path.dirname(inputFile), outputName)
 
   object = CSON.readFileSync(inputFile)
   if _.isObject(object)

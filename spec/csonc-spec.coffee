@@ -18,10 +18,10 @@ describe "CSON compilation to JSON", ->
     expect(process.exit.mostRecentCall.args[0]).toBe 1
     expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0
 
-  it "logs an error and exits when no input file is specified", ->
-    csonc(['./input.cson'])
-    expect(process.exit.mostRecentCall.args[0]).toBe 1
-    expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0
+  it "writes the output file to the input file's directory with the same base name and .json extension", ->
+    fs.writeFileSync(inputFile, 'deadmau: 5')
+    csonc([inputFile])
+    expect(fs.readFileSync(outputFile, {encoding: 'utf8'})).toBe '{\n  "deadmau": 5\n}\n'
 
   describe "when a valid CSON file is specified", ->
     it "converts the file to JSON and writes it out", ->
