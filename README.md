@@ -53,3 +53,12 @@ Is the given path a valid object path?
 
 Returns `true` if the path has a `.json` or `.cson` file extension, `false`
 otherwise.
+
+### CSON.resolve(objectPath)
+
+Resolve the path to an existent file that has a `.json` or `.cson` extension.
+
+`objectPath` - The string path to a JSON or CSON object file with or without
+               an extension.
+
+Returns the path to an existent CSON or JSON file or `null` if none found.
