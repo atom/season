@@ -31,7 +31,7 @@ describe "CSON compilation to JSON", ->
 
   describe "when an invalid CSON file is specified", ->
     it "logs an error and exits", ->
-      fs.writeFileSync(inputFile, '1234')
+      fs.writeFileSync(inputFile, '<->')
       csonc([inputFile, outputFile])
       expect(process.exit.mostRecentCall.args[0]).toBe 1
       expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0

@@ -18,9 +18,10 @@ module.exports = (argv=[]) ->
     outputName = "#{path.basename(inputFile, path.extname(inputFile))}.json"
     outputFile = path.join(path.dirname(inputFile), outputName)
 
-  object = CSON.readFileSync(inputFile)
-  if _.isObject(object)
-    CSON.writeFileSync(outputFile, object)
-  else
-    console.error("Input file does not contain an object: #{inputFile}")
+  try
+    object = CSON.readFileSync(inputFile)
+  catch e
+    console.error("File does not contain valid CoffeeScript: #{inputFile}")
     process.exit(1)
+
+  CSON.writeFileSync(outputFile, object)
