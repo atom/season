@@ -116,7 +116,7 @@ describe "CSON", ->
       fs.writeFileSync(file3, '{}')
 
       expect(CSON.resolve(file1)).toBe file1
-      expect(CSON.resolve(path.join(objectDir, 'file2'))).toBe file2
-      expect(CSON.resolve(path.join(objectDir, 'file3'))).toBe file3
+      expect(CSON.resolve(file2)).toBe file2
+      expect(CSON.resolve(file3)).toBe file3
       expect(CSON.resolve(path.join(objectDir, 'file4'))).toBe null
       expect(CSON.resolve(folder1)).toBe null
