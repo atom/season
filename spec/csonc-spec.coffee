@@ -41,3 +41,17 @@ describe "CSON compilation to JSON", ->
       csonc([inputFile])
       expect(process.exit.mostRecentCall.args[0]).toBe 1
       expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0
+
+  describe "when the root option is set", ->
+    describe "when the input CSON file contains a root object", ->
+      it "converts the file to JSON and writes it out", ->
+        fs.writeFileSync(inputFile, 'a: 3')
+        csonc(['--root', inputFile])
+        expect(fs.readFileSync(outputFile, {encoding: 'utf8'})).toBe '{\n  "a": 3\n}\n'
+
+    describe "when the input CSON file contains a root array", ->
+      it "logs and error and exits", ->
+        fs.writeFileSync(inputFile, '[1,2,3]')
+        csonc(['--root', inputFile])
+        expect(process.exit.mostRecentCall.args[0]).toBe 1
+        expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0

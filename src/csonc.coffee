@@ -1,14 +1,22 @@
 path = require 'path'
 _ = require 'underscore'
+optimist = require 'optimist'
 CSON = require './cson'
 
 module.exports = (argv=[]) ->
-  [inputFile, outputFile] = argv
+  options = optimist(argv)
+  options.usage('Usage: csonc <inputFile> [<outputFile>]')
+  options.alias('r', 'root')
+         .boolean('r')
+         .describe('r', 'Require that the input file contain an object at the root.')
+         .default('r', false)
+  argv = options.argv
+  [inputFile, outputFile] = argv._
 
   if inputFile?.length > 0
     inputFile = path.resolve(process.cwd(), inputFile)
   else
-    console.error("Input file must be first argument")
+    options.showHelp(console.error)
     process.exit(1)
     return
 
@@ -20,6 +28,11 @@ module.exports = (argv=[]) ->
 
   try
     object = CSON.readFileSync(inputFile)
+    if argv.r
+      if !_.isObject(object) or _.isArray(object)
+        console.error("#{inputFile} does not contain a root object")
+        process.exit(1)
+        return
   catch e
     console.error("Parsing #{inputFile} failed:", e.message)
     process.exit(1)

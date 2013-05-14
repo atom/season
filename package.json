@@ -29,7 +29,8 @@
   ],
   "dependencies": {
     "underscore": "~1.4.4",
-    "coffee-script": "~1.6.2"
+    "coffee-script": "~1.6.2",
+    "optimist": "~0.4.0"
   },
   "devDependencies": {
     "jasmine-focused": "~0.1.0",
