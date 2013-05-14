@@ -29,9 +29,15 @@ describe "CSON compilation to JSON", ->
       csonc([inputFile, outputFile])
       expect(fs.readFileSync(outputFile, {encoding: 'utf8'})).toBe '{\n  "a": 3\n}\n'
 
-  describe "when an invalid CSON file is specified", ->
+  describe "when an input CSON file is invalid CoffeeScript", ->
     it "logs an error and exits", ->
       fs.writeFileSync(inputFile, '<->')
-      csonc([inputFile, outputFile])
+      csonc([inputFile])
+      expect(process.exit.mostRecentCall.args[0]).toBe 1
+      expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0
+
+  describe "when the input CSON file does not exist", ->
+    it "logs an error and exits", ->
+      csonc([inputFile])
       expect(process.exit.mostRecentCall.args[0]).toBe 1
       expect(console.error.mostRecentCall.args[0].length).toBeGreaterThan 0
