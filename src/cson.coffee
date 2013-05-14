@@ -81,6 +81,12 @@ parseObject = (objectPath, contents) ->
   else
     JSON.parse(contents)
 
+exists = (objectPath) ->
+  try
+    fs.statSync(objectPath).isFile()
+  catch e
+    false
+
 module.exports =
   isObjectPath: (objectPath) ->
     return false unless objectPath
@@ -89,13 +95,13 @@ module.exports =
     extension is '.cson' or extension is '.json'
 
   resolve: (objectPath) ->
-    return objectPath if @isObjectPath(objectPath) and fs.existsSync(objectPath)
+    return objectPath if @isObjectPath(objectPath) and exists(objectPath)
 
     csonPath = "#{objectPath}.cson"
-    return csonPath if @isObjectPath(csonPath) and fs.existsSync(csonPath)
+    return csonPath if @isObjectPath(csonPath) and exists(csonPath)
 
     jsonPath = "#{objectPath}.json"
-    return jsonPath if @isObjectPath(jsonPath) and fs.existsSync(jsonPath)
+    return jsonPath if @isObjectPath(jsonPath) and exists(jsonPath)
 
     null
 

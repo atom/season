@@ -109,6 +109,8 @@ describe "CSON", ->
       file1 = path.join(objectDir, 'file1.json')
       file2 = path.join(objectDir, 'file2.cson')
       file3 = path.join(objectDir, 'file3.json')
+      folder1 = path.join(objectDir, 'folder1.json')
+      fs.mkdirSync(folder1)
       fs.writeFileSync(file1, '{}')
       fs.writeFileSync(file2, '{}')
       fs.writeFileSync(file3, '{}')
@@ -117,3 +119,4 @@ describe "CSON", ->
       expect(CSON.resolve(path.join(objectDir, 'file2'))).toBe file2
       expect(CSON.resolve(path.join(objectDir, 'file3'))).toBe file3
       expect(CSON.resolve(path.join(objectDir, 'file4'))).toBe null
+      expect(CSON.resolve(folder1)).toBe null
