@@ -14,6 +14,23 @@ npm install season
   * Run `grunt` to compile the CoffeeScript code
   * Run `grunt test` to run the specs
 
+### Compiling CSON to JSON
+
+This module comes with a `csonc` executable that allows you to compile a CSON
+file to JSON.
+
+To use:
+
+```sh
+npm install -g season
+echo "this: 'is cson'" > file.cson
+csonc file.cson file.json
+cat file.json
+{
+  "this": "is cson"
+}
+```
+
 ## Docs
 
 ```coffeescript
