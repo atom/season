@@ -52,10 +52,14 @@ once it is read and parsed.
 
 `objectPath` - The string path to a JSON or CSON object file.
 
-`callback` - The callback to call with the error or object once the path
+`callback` - The function to call with the error or object once the path
              is read and parsed.
 
-### CSON.writeFileSync(objectPath, object)
+### CSON.readFileSync(objectPath, object)
+
+Synchronous version of `CSON.readFile(objectPath, callback)`
+
+### CSON.writeFile(objectPath, object, callback)
 
 Write the object to the given path as either JSON or CSON depending on the
 path's extension.
@@ -63,6 +67,12 @@ path's extension.
 `objectPath` - The string path to a JSON or CSON object file.
 
 `object` - The object to convert to a string and write to the path.
+
+`callback` - The function to with an error object on failures.
+
+### CSON.writeFileSync(objectPath, object)
+
+Synchronous version of `CSON.writeFile(objectPath, object, callback)`
 
 ### CSON.isObjectPath(objectPath)
 
