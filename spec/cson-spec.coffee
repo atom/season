@@ -1,4 +1,5 @@
 path = require 'path'
+util = require 'util'
 fs = require 'fs'
 temp = require 'temp'
 CSON = require '../lib/cson'
@@ -120,3 +121,44 @@ describe "CSON", ->
       expect(CSON.resolve(file3)).toBe file3
       expect(CSON.resolve(path.join(objectDir, 'file4'))).toBe null
       expect(CSON.resolve(folder1)).toBe null
+
+  describe ".writeFile(objectPath, object, callback)", ->
+    object =
+      a: 1
+      b: 2
+
+    describe "when called with a .json path", ->
+      it "writes the object and calls back", ->
+        jsonPath = path.join(temp.mkdirSync('season-object-dir-'), 'file1.json')
+        callback = jasmine.createSpy('callback')
+        CSON.writeFile(jsonPath, object, callback)
+
+        waitsFor ->
+          callback.callCount is 1
+
+        runs ->
+          expect(CSON.readFileSync(jsonPath)).toEqual object
+
+    describe "when called with a .cson path", ->
+      csonPath = path.join(temp.mkdirSync('season-object-dir-'), 'file1.cson')
+
+      describe "when called with an invalid object", ->
+        it "calls back with an error", ->
+          callback = jasmine.createSpy('callback')
+          CSON.writeFile(csonPath, undefined, callback)
+
+          waitsFor ->
+            callback.callCount is 1
+
+          runs ->
+            expect(util.isError(callback.mostRecentCall.args[0])).toBeTruthy()
+
+      it "writes the object and calls back", ->
+        callback = jasmine.createSpy('callback')
+        CSON.writeFile(csonPath, object, callback)
+
+        waitsFor ->
+          callback.callCount is 1
+
+        runs ->
+          expect(CSON.readFileSync(csonPath)).toEqual object

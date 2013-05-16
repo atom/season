@@ -118,12 +118,23 @@ module.exports =
         catch parseError
           callback?(parseError)
 
+  writeFile: (objectPath, object, callback) ->
+    try
+      contents = @stringifyPath(objectPath, object)
+    catch error
+      callback(error)
+      return
+
+    fs.writeFile(objectPath, "#{contents}\n", callback)
+
   writeFileSync: (objectPath, object) ->
+    fs.writeFileSync(objectPath, "#{@stringifyPath(objectPath, object)}\n")
+
+  stringifyPath: (objectPath, object) ->
     if path.extname(objectPath) is '.cson'
-      content = @stringify(object)
+      @stringify(object)
     else
-      content = JSON.stringify(object, undefined, 2)
-    fs.writeFileSync(objectPath, "#{content}\n")
+      JSON.stringify(object, undefined, 2)
 
   stringify: (object) ->
     throw new Error("Cannot stringify undefined object") if object is undefined
