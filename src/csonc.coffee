@@ -5,7 +5,7 @@ CSON = require './cson'
 
 module.exports = (argv=[]) ->
   options = optimist(argv)
-  options.usage('Usage: csonc <inputFile> [<outputFile>]')
+  options.usage('Usage: csonc input_file [output_file]')
   options.alias('r', 'root')
          .boolean('r')
          .describe('r', 'Require that the input file contain an object at the root.')
