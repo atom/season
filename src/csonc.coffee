@@ -28,11 +28,10 @@ module.exports = (argv=[]) ->
 
   try
     object = CSON.readFileSync(inputFile)
-    if argv.r
-      if !_.isObject(object) or _.isArray(object)
-        console.error("#{inputFile} does not contain a root object")
-        process.exit(1)
-        return
+    if argv.r and (!_.isObject(object) or _.isArray(object))
+      console.error("#{inputFile} does not contain a root object")
+      process.exit(1)
+      return
   catch e
     console.error("Parsing #{inputFile} failed:", e.message)
     process.exit(1)
