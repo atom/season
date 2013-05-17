@@ -25,7 +25,8 @@
   },
   "keywords": [
     "cson",
-    "json"
+    "json",
+    "CoffeeScript"
   ],
   "dependencies": {
     "underscore": "~1.4.4",
