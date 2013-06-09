@@ -23,6 +23,7 @@
   "bugs": {
     "url": "https://github.com/atom/season/issues"
   },
+  "homepage": "http://atom.github.io/season",
   "keywords": [
     "cson",
     "json",
