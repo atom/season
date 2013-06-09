@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Season by atom</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Season</h1>
+        <p>CSON Node Module</p>
+
+        <p class="view"><a href="https://github.com/atom/season">View the Project on GitHub <small>atom/season</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/atom/season/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/atom/season/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/atom/season">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="season---cson-node-module-" class="anchor" href="#season---cson-node-module-"><span class="octicon octicon-link"></span></a>season - CSON Node module <a href="https://travis-ci.org/atom/season"><img src="https://travis-ci.org/atom/season.png" alt="Build Status"></a>
+</h1>
+
+<p>Read and write CSON/JSON files seamlessly.</p>
+
+<h2>
+<a name="installing" class="anchor" href="#installing"><span class="octicon octicon-link"></span></a>Installing</h2>
+
+<div class="highlight"><pre>npm install season
+</pre></div>
+
+<h2>
+<a name="building" class="anchor" href="#building"><span class="octicon octicon-link"></span></a>Building</h2>
+
+<ul>
+<li>Clone the repository</li>
+<li>Run <code>npm install</code>
+</li>
+<li>Run <code>grunt</code> to compile the CoffeeScript code</li>
+<li>Run <code>grunt test</code> to run the specs</li>
+</ul><h2>
+<a name="compiling-cson-to-json" class="anchor" href="#compiling-cson-to-json"><span class="octicon octicon-link"></span></a>Compiling CSON to JSON</h2>
+
+<p>This module comes with a <code>csonc</code> executable that allows you to compile a CSON
+file to JSON.</p>
+
+<p>To use:</p>
+
+<div class="highlight"><pre>npm install -g season
+<span class="nb">echo</span> <span class="s2">"this: 'is cson'"</span> &gt; file.cson
+csonc file.cson file.json
+cat file.json
+<span class="o">{</span>
+  <span class="s2">"this"</span>: <span class="s2">"is cson"</span>
+<span class="o">}</span>
+</pre></div>
+
+<h2>
+<a name="docs" class="anchor" href="#docs"><span class="octicon octicon-link"></span></a>Docs</h2>
+
+<div class="highlight"><pre><span class="nv">CSON = </span><span class="nx">require</span> <span class="s">'season'</span>
+</pre></div>
+
+<h3>
+<a name="csonstringifyobject" class="anchor" href="#csonstringifyobject"><span class="octicon octicon-link"></span></a>CSON.stringify(object)</h3>
+
+<p>Convert the object to a CSON string.</p>
+
+<p><code>object</code> - The object to convert to CSON.</p>
+
+<p>Returns the CSON string representation of the given object.</p>
+
+<h3>
+<a name="csonreadfileobjectpath-callback" class="anchor" href="#csonreadfileobjectpath-callback"><span class="octicon octicon-link"></span></a>CSON.readFile(objectPath, callback)</h3>
+
+<p>Read the CSON or JSON object at the given path and return it to the callback
+once it is read and parsed.</p>
+
+<p><code>objectPath</code> - The string path to a JSON or CSON object file.</p>
+
+<p><code>callback</code> - The function to call with the error or object once the path
+             is read and parsed.</p>
+
+<h3>
+<a name="csonreadfilesyncobjectpath-object" class="anchor" href="#csonreadfilesyncobjectpath-object"><span class="octicon octicon-link"></span></a>CSON.readFileSync(objectPath, object)</h3>
+
+<p>Synchronous version of <code>CSON.readFile(objectPath, callback)</code></p>
+
+<h3>
+<a name="csonwritefileobjectpath-object-callback" class="anchor" href="#csonwritefileobjectpath-object-callback"><span class="octicon octicon-link"></span></a>CSON.writeFile(objectPath, object, callback)</h3>
+
+<p>Write the object to the given path as either JSON or CSON depending on the
+path's extension.</p>
+
+<p><code>objectPath</code> - The string path to a JSON or CSON object file.</p>
+
+<p><code>object</code> - The object to convert to a string and write to the path.</p>
+
+<p><code>callback</code> - The function to with an error object on failures.</p>
+
+<h3>
+<a name="csonwritefilesyncobjectpath-object" class="anchor" href="#csonwritefilesyncobjectpath-object"><span class="octicon octicon-link"></span></a>CSON.writeFileSync(objectPath, object)</h3>
+
+<p>Synchronous version of <code>CSON.writeFile(objectPath, object, callback)</code></p>
+
+<h3>
+<a name="csonisobjectpathobjectpath" class="anchor" href="#csonisobjectpathobjectpath"><span class="octicon octicon-link"></span></a>CSON.isObjectPath(objectPath)</h3>
+
+<p>Is the given path a valid object path?</p>
+
+<p>Returns <code>true</code> if the path has a <code>.json</code> or <code>.cson</code> file extension, <code>false</code>
+otherwise.</p>
+
+<h3>
+<a name="csonresolveobjectpath" class="anchor" href="#csonresolveobjectpath"><span class="octicon octicon-link"></span></a>CSON.resolve(objectPath)</h3>
+
+<p>Resolve the path to an existent file that has a <code>.json</code> or <code>.cson</code> extension.</p>
+
+<p><code>objectPath</code> - The string path to a JSON or CSON object file with or without
+               an extension.</p>
+
+<p>Returns the path to an existent CSON or JSON file or <code>null</code> if none found.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/atom">atom</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
