@@ -13,7 +13,7 @@
     "csonc": "./bin/csonc"
   },
   "scripts": {
-    "prepublish": "grunt coffee",
+    "prepublish": "grunt clean lint coffee",
     "test": "jasmine-focused --captureExceptions --coffee spec/"
   },
   "repository": {
