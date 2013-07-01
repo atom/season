@@ -55,9 +55,11 @@ once it is read and parsed.
 `callback` - The function to call with the error or object once the path
              is read and parsed.
 
-### CSON.readFileSync(objectPath, object)
+### CSON.readFileSync(objectPath)
 
-Synchronous version of `CSON.readFile(objectPath, callback)`
+Synchronous version of `CSON.readFile(objectPath, callback)`.
+
+Returns the object read from the path or throws an error if reading fails.
 
 ### CSON.writeFile(objectPath, object, callback)
 
