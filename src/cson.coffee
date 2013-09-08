@@ -1,6 +1,8 @@
 fs = require 'fs'
 path = require 'path'
+
 _ = require 'underscore'
+CoffeeScript = null
 
 multiplyString = (string, n) -> new Array(1 + n).join(string)
 
@@ -76,7 +78,7 @@ stringifyObject = (object, indentLevel=0) ->
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
-    CoffeeScript = require 'coffee-script'
+    CoffeeScript ?= require 'coffee-script'
     CoffeeScript.eval(contents, {bare: true, sandbox: true})
   else
     JSON.parse(contents)
