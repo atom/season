@@ -37,6 +37,12 @@ cat file.json
 CSON = require 'season'
 ```
 
+### CSON.setCacheDir(cacheDirectory)
+
+Set the cache directory to use for storing compiled CSON files.
+
+`cacheDirectory` - Root directory path for storing compiled CSON.
+
 ### CSON.stringify(object)
 
 Convert the object to a CSON string.

@@ -1,7 +1,9 @@
+crypto = require 'crypto'
 fs = require 'fs'
 path = require 'path'
 
 _ = require 'underscore'
+mkdirp = require 'mkdirp'
 CoffeeScript = null
 
 multiplyString = (string, n) -> new Array(1 + n).join(string)
@@ -76,6 +78,23 @@ stringifyObject = (object, indentLevel=0) ->
     prefix = '\n'
   cson
 
+csonCache = null
+
+getCachePath = (cson) ->
+  digest = crypto.createHash('sha1').update(cson, 'utf8').digest('hex')
+  path.join(csonCache, "#{digest}.json")
+
+writeCacheFileSync = (cachePath, object) ->
+  try
+    mkdirp.sync(path.dirname(cachePath))
+    fs.writeFileSync(cachePath, JSON.stringify(object))
+
+writeCacheFile = (cachePath, object) ->
+  try
+    mkdirp path.dirname(cachePath), (error) ->
+      unless error?
+        fs.writeFile(cachePath, JSON.stringify(object))
+
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
     CoffeeScript ?= require 'coffee-script'
@@ -83,13 +102,28 @@ parseObject = (objectPath, contents) ->
   else
     JSON.parse(contents)
 
+parseContentsSync = (objectPath, cachePath, contents) ->
+  object = parseObject(objectPath, contents)
+  writeCacheFileSync(cachePath, object) if cachePath
+  object
+
+parseContents = (objectPath, cachePath, contents, callback) ->
+  try
+    object = parseObject(objectPath, contents)
+    writeCacheFile(cachePath, object) if cachePath
+    callback?(null, object)
+  catch parseError
+    callback?(parseError)
+
 exists = (objectPath) ->
   try
     fs.statSync(objectPath).isFile()
-  catch e
+  catch error
     false
 
 module.exports =
+  setCacheDir: (cacheDirectory) -> csonCache = cacheDirectory
+
   isObjectPath: (objectPath) ->
     return false unless objectPath
 
@@ -108,17 +142,36 @@ module.exports =
     null
 
   readFileSync: (objectPath) ->
-    parseObject(objectPath, fs.readFileSync(objectPath, 'utf8'))
+    contents = fs.readFileSync(objectPath, 'utf8')
+    if csonCache and path.extname(objectPath) is '.cson'
+      cachePath = getCachePath(contents)
+      if exists(cachePath)
+        try
+          return JSON.parse(fs.readFileSync(cachePath, 'utf8'))
+
+    parseContentsSync(objectPath, cachePath, contents)
 
   readFile: (objectPath, callback) ->
     fs.readFile objectPath, 'utf8', (error, contents) =>
       if error?
         callback?(error)
       else
-        try
-          callback?(null, parseObject(objectPath, contents))
-        catch parseError
-          callback?(parseError)
+        if csonCache and path.extname(objectPath) is '.cson'
+          cachePath = getCachePath(contents)
+          fs.stat cachePath, (error, stat) ->
+            if stat?.isFile()
+              fs.readFile cachePath, 'utf8', (error, cached) ->
+                try
+                  parsed = JSON.parse(cached)
+                catch error
+                  try
+                    parseContents(objectPath, cachePath, contents, callback)
+                  return
+                callback?(null, parsed)
+            else
+              parseContents(objectPath, cachePath, contents, callback)
+        else
+          parseContents(objectPath, null, contents, callback)
 
   writeFile: (objectPath, object, callback) ->
     try

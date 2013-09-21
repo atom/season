@@ -5,6 +5,9 @@ temp = require 'temp'
 CSON = require '../lib/cson'
 
 describe "CSON", ->
+  beforeEach ->
+    CSON.setCacheDir(null)
+
   describe ".stringify(object)", ->
     describe "when the object is undefined", ->
       it "throws an exception", ->
@@ -162,3 +165,25 @@ describe "CSON", ->
 
         runs ->
           expect(CSON.readFileSync(csonPath)).toEqual object
+
+  describe "when a cache directory is set", ->
+    it "caches the contents of the compiled CSON files", ->
+      samplePath = path.join(__dirname, 'fixtures', 'sample.cson')
+      cacheDir = temp.mkdirSync('cache-dir')
+      CSON.setCacheDir(cacheDir)
+      CoffeeScript = require 'coffee-script'
+      spyOn(CoffeeScript, 'eval').andCallThrough()
+
+      expect(CSON.readFileSync(samplePath)).toEqual {a: 1, b: c: true}
+      expect(CoffeeScript.eval.callCount).toBe 1
+      CoffeeScript.eval.reset()
+      expect(CSON.readFileSync(samplePath)).toEqual {a: 1, b: c: true}
+      expect(CoffeeScript.eval.callCount).toBe 0
+
+      CoffeeScript.eval.reset()
+      sample = null
+      CSON.readFile samplePath, (error, object) -> sample = object
+      waitsFor -> sample?
+      runs ->
+        expect(sample).toEqual {a: 1, b: c: true}
+        expect(CoffeeScript.eval.callCount).toBe 0
