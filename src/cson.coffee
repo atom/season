@@ -90,10 +90,8 @@ writeCacheFileSync = (cachePath, object) ->
     fs.writeFileSync(cachePath, JSON.stringify(object))
 
 writeCacheFile = (cachePath, object) ->
-  try
-    mkdirp path.dirname(cachePath), (error) ->
-      unless error?
-        fs.writeFile(cachePath, JSON.stringify(object))
+  mkdirp path.dirname(cachePath), (error) ->
+    fs.writeFile(cachePath, JSON.stringify(object)) unless error?
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
