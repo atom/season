@@ -113,11 +113,18 @@ parseContents = (objectPath, cachePath, contents, callback) ->
   catch parseError
     callback?(parseError)
 
-exists = (objectPath) ->
-  try
-    fs.statSync(objectPath).isFile()
-  catch error
-    false
+if fs.statSyncNoException?
+  exists = (objectPath) ->
+    if stats = fs.statSyncNoException(objectPath)
+      stats.isFile()
+    else
+      false
+else
+  exists = (objectPath) ->
+    try
+      fs.statSync(objectPath).isFile()
+    catch error
+      false
 
 module.exports =
   setCacheDir: (cacheDirectory) -> csonCache = cacheDirectory
