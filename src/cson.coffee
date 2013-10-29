@@ -135,7 +135,9 @@ module.exports =
     extension = path.extname(objectPath)
     extension is '.cson' or extension is '.json'
 
-  resolve: (objectPath) ->
+  resolve: (objectPath='') ->
+    return null unless objectPath
+
     return objectPath if @isObjectPath(objectPath) and exists(objectPath)
 
     csonPath = "#{objectPath}.cson"

@@ -107,7 +107,7 @@ describe "CSON", ->
       expect(CSON.isObjectPath('')).toBe false
       expect(CSON.isObjectPath('a/b/c.txt')).toBe false
 
-  describe ".resolveObjectPath(objectPath)", ->
+  describe ".resolve(objectPath)", ->
     it "returns the path to the object file", ->
       objectDir = temp.mkdirSync('season-object-dir-')
       file1 = path.join(objectDir, 'file1.json')
@@ -124,6 +124,9 @@ describe "CSON", ->
       expect(CSON.resolve(file3)).toBe file3
       expect(CSON.resolve(path.join(objectDir, 'file4'))).toBe null
       expect(CSON.resolve(folder1)).toBe null
+      expect(CSON.resolve()).toBe null
+      expect(CSON.resolve(null)).toBe null
+      expect(CSON.resolve('')).toBe null
 
   describe ".writeFile(objectPath, object, callback)", ->
     object =
