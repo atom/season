@@ -141,10 +141,10 @@ module.exports =
     return objectPath if @isObjectPath(objectPath) and exists(objectPath)
 
     csonPath = "#{objectPath}.cson"
-    return csonPath if @isObjectPath(csonPath) and exists(csonPath)
+    return csonPath if exists(csonPath)
 
     jsonPath = "#{objectPath}.json"
-    return jsonPath if @isObjectPath(jsonPath) and exists(jsonPath)
+    return jsonPath if exists(jsonPath)
 
     null
 
