@@ -1,7 +1,7 @@
 crypto = require 'crypto'
 path = require 'path'
 
-_ = require 'underscore'
+_ = require 'underscore-plus'
 fs = require 'fs-plus'
 CoffeeScript = null
 

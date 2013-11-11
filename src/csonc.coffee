@@ -1,5 +1,5 @@
 path = require 'path'
-_ = require 'underscore'
+_ = require 'underscore-plus'
 optimist = require 'optimist'
 CSON = require './cson'
 
