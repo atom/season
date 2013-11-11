@@ -33,7 +33,7 @@
     "underscore": "~1.4.4",
     "coffee-script": "~1.6.2",
     "optimist": "~0.4.0",
-    "mkdirp": "~0.3.5"
+    "fs-plus": "~0.9.0"
   },
   "devDependencies": {
     "jasmine-focused": "~0.15.0",

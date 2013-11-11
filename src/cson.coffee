@@ -1,9 +1,8 @@
 crypto = require 'crypto'
-fs = require 'fs'
 path = require 'path'
 
 _ = require 'underscore'
-mkdirp = require 'mkdirp'
+fs = require 'fs-plus'
 CoffeeScript = null
 
 multiplyString = (string, n) -> new Array(1 + n).join(string)
@@ -86,12 +85,10 @@ getCachePath = (cson) ->
 
 writeCacheFileSync = (cachePath, object) ->
   try
-    mkdirp.sync(path.dirname(cachePath))
     fs.writeFileSync(cachePath, JSON.stringify(object))
 
 writeCacheFile = (cachePath, object) ->
-  mkdirp path.dirname(cachePath), (error) ->
-    fs.writeFile(cachePath, JSON.stringify(object)) unless error?
+  fs.writeFile(cachePath, JSON.stringify(object))
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
