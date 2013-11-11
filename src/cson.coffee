@@ -110,19 +110,6 @@ parseContents = (objectPath, cachePath, contents, callback) ->
   catch parseError
     callback?(parseError)
 
-if fs.statSyncNoException?
-  exists = (objectPath) ->
-    if stats = fs.statSyncNoException(objectPath)
-      stats.isFile()
-    else
-      false
-else
-  exists = (objectPath) ->
-    try
-      fs.statSync(objectPath).isFile()
-    catch error
-      false
-
 module.exports =
   setCacheDir: (cacheDirectory) -> csonCache = cacheDirectory
 
@@ -135,13 +122,13 @@ module.exports =
   resolve: (objectPath='') ->
     return null unless objectPath
 
-    return objectPath if @isObjectPath(objectPath) and exists(objectPath)
+    return objectPath if @isObjectPath(objectPath) and fs.isFileSync(objectPath)
 
     csonPath = "#{objectPath}.json"
-    return csonPath if exists(csonPath)
+    return csonPath if fs.isFileSync(csonPath)
 
     jsonPath = "#{objectPath}.cson"
-    return jsonPath if exists(jsonPath)
+    return jsonPath if fs.isFileSync(jsonPath)
 
     null
 
@@ -149,7 +136,7 @@ module.exports =
     contents = fs.readFileSync(objectPath, 'utf8')
     if csonCache and path.extname(objectPath) is '.cson'
       cachePath = getCachePath(contents)
-      if exists(cachePath)
+      if fs.isFileSync(cachePath)
         try
           return JSON.parse(fs.readFileSync(cachePath, 'utf8'))
 
