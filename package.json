@@ -30,7 +30,7 @@
     "CoffeeScript"
   ],
   "dependencies": {
-    "underscore-plus": "~0.2.0",
+    "underscore-plus": "~0.6.1",
     "coffee-script": "~1.6.2",
     "optimist": "~0.4.0",
     "fs-plus": "~0.9.0"
