@@ -124,11 +124,11 @@ module.exports =
 
     return objectPath if @isObjectPath(objectPath) and fs.isFileSync(objectPath)
 
-    csonPath = "#{objectPath}.json"
-    return csonPath if fs.isFileSync(csonPath)
-
-    jsonPath = "#{objectPath}.cson"
+    jsonPath = "#{objectPath}.json"
     return jsonPath if fs.isFileSync(jsonPath)
+
+    csonPath = "#{objectPath}.cson"
+    return csonPath if fs.isFileSync(csonPath)
 
     null
 
