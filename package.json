@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "underscore-plus": "1.x",
-    "coffee-script": "~1.6.2",
+    "coffee-script": "~1.7.0",
     "optimist": "~0.4.0",
     "fs-plus": "1.x"
   },
