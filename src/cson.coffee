@@ -56,7 +56,7 @@ stringifyObject = (object, indentLevel=0) ->
     if _.isFunction(value)
       throw new Error("Function specified as value to key: #{key}")
 
-    cson += "#{prefix}#{stringifyIndent(indentLevel)}'#{key}':"
+    cson += "#{prefix}#{stringifyIndent(indentLevel)}#{stringifyString(key)}:"
     if _.isString(value)
       cson += " #{stringifyString(value)}"
     else if _.isBoolean(value)

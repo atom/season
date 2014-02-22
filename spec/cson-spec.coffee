@@ -83,6 +83,9 @@ describe "CSON", ->
         expect(CSON.stringify(a:{})).toBe "'a': {}"
         expect(CSON.stringify(a:[])).toBe "'a': []"
 
+      it "escapes object keys", ->
+        expect(CSON.stringify('\\t': 3)).toBe "'\\\\t': 3"
+
   describe "when converting back to an object", ->
     it "produces the original object", ->
       object =
