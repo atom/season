@@ -97,8 +97,8 @@ describe "CSON", ->
           f: true
 
       cson = CSON.stringify(object)
-      CoffeeScript = require 'coffee-script'
-      evaledObject = CoffeeScript.eval(cson, bare: true)
+      CSONParser = require 'cson-safe'
+      evaledObject = CSONParser.parse(cson)
       expect(evaledObject).toEqual object
 
   describe ".isObjectPath(objectPath)", ->
@@ -178,32 +178,32 @@ describe "CSON", ->
         samplePath = path.join(__dirname, 'fixtures', 'sample.cson')
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
-        CoffeeScript = require 'coffee-script'
-        spyOn(CoffeeScript, 'eval').andCallThrough()
+        CSONParser = require 'cson-safe'
+        spyOn(CSONParser, 'parse').andCallThrough()
 
         expect(CSON.readFileSync(samplePath)).toEqual {a: 1, b: c: true}
-        expect(CoffeeScript.eval.callCount).toBe 1
-        CoffeeScript.eval.reset()
+        expect(CSONParser.parse.callCount).toBe 1
+        CSONParser.parse.reset()
         expect(CSON.readFileSync(samplePath)).toEqual {a: 1, b: c: true}
-        expect(CoffeeScript.eval.callCount).toBe 0
+        expect(CSONParser.parse.callCount).toBe 0
 
     describe "asynchronous reads", ->
       it "caches the contents of the compiled CSON files", ->
         samplePath = path.join(__dirname, 'fixtures', 'sample.cson')
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
-        CoffeeScript = require 'coffee-script'
-        spyOn(CoffeeScript, 'eval').andCallThrough()
+        CSONParser = require 'cson-safe'
+        spyOn(CSONParser, 'parse').andCallThrough()
 
         sample = null
         CSON.readFile samplePath, (error, object) -> sample = object
         waitsFor -> sample?
         runs ->
           expect(sample).toEqual {a: 1, b: c: true}
-          expect(CoffeeScript.eval.callCount).toBe 1
-          CoffeeScript.eval.reset()
+          expect(CSONParser.parse.callCount).toBe 1
+          CSONParser.parse.reset()
           sample = null
           CSON.readFile samplePath, (error, object) -> sample = object
         waitsFor -> sample?
         runs ->
-          expect(CoffeeScript.eval.callCount).toBe 0
+          expect(CSONParser.parse.callCount).toBe 0
