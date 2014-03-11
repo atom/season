@@ -3,7 +3,7 @@ path = require 'path'
 
 _ = require 'underscore-plus'
 fs = require 'fs-plus'
-CoffeeScript = null
+CSONParser = null
 
 multiplyString = (string, n) -> new Array(1 + n).join(string)
 
@@ -92,8 +92,8 @@ writeCacheFile = (cachePath, object) ->
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
-    CoffeeScript ?= require 'coffee-script'
-    CoffeeScript.eval(contents, {bare: true, sandbox: true})
+    CSONParser ?= require 'cson-safe'
+    CSONParser.parse(contents)
   else
     JSON.parse(contents)
 
