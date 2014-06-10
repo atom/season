@@ -1,5 +1,3 @@
-path = require 'path'
-_ = require 'underscore-plus'
 optimist = require 'optimist'
 stdin = require 'stdin'
 CSON = require 'cson-safe'
