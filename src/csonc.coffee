@@ -14,12 +14,18 @@ module.exports = (argv=[]) ->
     If no output file is specified then the JSON is written to standard out.
   """
   options.alias('h', 'help').describe('help', 'Print this help message')
-  options.alias('r', 'root').boolean('root').describe('root', 'Require that the input file contain an object at the root.').default('root', false)
-  options.alias('o', 'output').string('output').describe('output', 'File path to write the JSON output to.')
+  options.alias('r', 'root').boolean('root').describe('root', 'Require that the input file contain an object at the root').default('root', false)
+  options.alias('o', 'output').string('output').describe('output', 'File path to write the JSON output to')
+  options.alias('v', 'version').describe('version', 'Print the version')
 
   {argv} = options
   [inputFile] = argv._
   inputFile = path.resolve(inputFile) if inputFile
+
+  if argv.version
+    {version} = require '../package.json'
+    console.log(version)
+    return
 
   if argv.help
     options.showHelp()
