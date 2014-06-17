@@ -6,19 +6,24 @@ CSON = require 'cson-safe'
 module.exports = (argv=[]) ->
   options = optimist(argv)
   options.usage """
-    Usage: csonc [options] file
-           csonc [options] < input_file [> output_file]
+    Usage: csonc [options] cson_file --output json_file
+           csonc [options] < cson_file [> json_file]
 
     If no input file is specified then the CSON is read from standard in.
 
     If no output file is specified then the JSON is written to standard out.
   """
+  options.alias('h', 'help').describe('help', 'Print this help message')
   options.alias('r', 'root').boolean('root').describe('root', 'Require that the input file contain an object at the root.').default('root', false)
   options.alias('o', 'output').string('output').describe('output', 'File path to write the JSON output to.')
 
   {argv} = options
   [inputFile] = argv._
   inputFile = path.resolve(inputFile) if inputFile
+
+  if argv.help
+    options.showHelp()
+    return
 
   parseData = (data) ->
     try
