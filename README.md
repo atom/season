@@ -24,7 +24,7 @@ To use:
 ```sh
 npm install -g season
 echo "this: 'is cson'" > file.cson
-csonc file.cson file.json
+csonc file.cson --output file.json
 cat file.json
 {
   "this": "is cson"
