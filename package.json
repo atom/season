@@ -33,7 +33,6 @@
     "cson-safe": "~0.1.1",
     "fs-plus": "2.x",
     "optimist": "~0.4.0",
-    "stdin": "0.0.1",
     "underscore-plus": "1.x"
   },
   "devDependencies": {
