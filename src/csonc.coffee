@@ -9,6 +9,8 @@ module.exports = (argv=[]) ->
     Usage: csonc [options] cson_file --output json_file
            csonc [options] < cson_file [> json_file]
 
+    Compiles CSON to JSON.
+
     If no input file is specified then the CSON is read from standard in.
 
     If no output file is specified then the JSON is written to standard out.
