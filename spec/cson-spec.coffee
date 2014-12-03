@@ -18,8 +18,8 @@ describe "CSON", ->
         expect(-> CSON.stringify(-> 'function')).toThrow()
 
     describe "when the object contains a function", ->
-      it "throws an exception", ->
-        expect(-> CSON.stringify(a:  -> 'function')).toThrow()
+      it "it gets filtered away, when not providing a visitor function", ->
+        expect(CSON.stringify(a:  -> 'function')).toBe '{}'
 
     describe "when formatting an undefined key", ->
       it "does not include the key in the formatted CSON", ->
