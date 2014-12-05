@@ -23,21 +23,17 @@ describe "CSON", ->
 
     describe "when formatting an undefined key", ->
       it "does not include the key in the formatted CSON", ->
-        expect(CSON.stringify(b: 1, c: undefined)).toBe '{\n  b: 1\n}'
+        expect(CSON.stringify(b: 1, c: undefined)).toBe 'b: 1'
 
     describe "when formatting a string", ->
       it "returns formatted CSON", ->
-        expect(CSON.stringify(a: 'b')).toBe '{\n  a: "b"\n}'
+        expect(CSON.stringify(a: 'b')).toBe 'a: "b"'
 
       it "doesn't escape single quotes", ->
-        expect(CSON.stringify(a: "'b'")).toBe '''{
-          a: "'b'"
-        }'''
+        expect(CSON.stringify(a: "'b'")).toBe '''a: "'b'"'''
 
       it "escapes double quotes", ->
-        expect(CSON.stringify(a: '"b"')).toBe '''{
-          a: "\\"b\\""
-        }'''
+        expect(CSON.stringify(a: '"b"')).toBe '''a: "\\"b\\""'''
 
       it "turns strings with newlines into triple-apostrophe strings", ->
         expect(CSON.stringify("a\nb")).toBe """'''
@@ -55,19 +51,19 @@ describe "CSON", ->
       it "returns formatted CSON", ->
         expect(CSON.stringify(true)).toBe 'true'
         expect(CSON.stringify(false)).toBe 'false'
-        expect(CSON.stringify(a: true)).toBe '{\n  a: true\n}'
-        expect(CSON.stringify(a: false)).toBe '{\n  a: false\n}'
+        expect(CSON.stringify(a: true)).toBe 'a: true'
+        expect(CSON.stringify(a: false)).toBe 'a: false'
 
     describe "when formatting a number", ->
       it "returns formatted CSON", ->
         expect(CSON.stringify(54321.012345)).toBe '54321.012345'
-        expect(CSON.stringify(a: 14)).toBe '{\n  a: 14\n}'
-        expect(CSON.stringify(a: 1.23)).toBe '{\n  a: 1.23\n}'
+        expect(CSON.stringify(a: 14)).toBe 'a: 14'
+        expect(CSON.stringify(a: 1.23)).toBe 'a: 1.23'
 
     describe "when formatting null", ->
       it "returns formatted CSON", ->
         expect(CSON.stringify(null)).toBe 'null'
-        expect(CSON.stringify(a: null)).toBe '{\n  a: null\n}'
+        expect(CSON.stringify(a: null)).toBe 'a: null'
 
     describe "when formatting an array", ->
       describe "when the array is empty", ->
@@ -75,17 +71,17 @@ describe "CSON", ->
           expect(CSON.stringify([])).toBe "[]"
 
       it "returns formatted CSON", ->
-        expect(CSON.stringify(a: ['b'])).toBe '''{
+        expect(CSON.stringify(a: ['b'])).toBe '''
           a: [
             "b"
           ]
-        }'''
-        expect(CSON.stringify(a: ['b', 4])).toBe '''{
+        '''
+        expect(CSON.stringify(a: ['b', 4])).toBe '''
           a: [
             "b"
             4
           ]
-        }'''
+        '''
 
       describe "when the array has an undefined value", ->
         it "formats the undefined value as null", ->
@@ -113,22 +109,15 @@ describe "CSON", ->
           expect(CSON.stringify({})).toBe "{}"
 
       it "returns formatted CSON", ->
-        expect(CSON.stringify(a: {b: 'c'})).toBe '''{
-          a: {
+        expect(CSON.stringify(a: {b: 'c'})).toBe '''
+          a:
             b: "c"
-          }
-        }'''
-        expect(CSON.stringify(a:{})).toBe '''{
-          a: {}
-        }'''
-        expect(CSON.stringify(a:[])).toBe '''{
-          a: []
-        }'''
+        '''
+        expect(CSON.stringify(a:{})).toBe 'a: {}'
+        expect(CSON.stringify(a:[])).toBe 'a: []'
 
       it "escapes object keys", ->
-        expect(CSON.stringify('\\t': 3)).toBe '''{
-          "\\\\t": 3
-        }'''
+        expect(CSON.stringify('\\t': 3)).toBe '"\\\\t": 3'
 
   describe "when converting back to an object", ->
     it "produces the original object", ->
