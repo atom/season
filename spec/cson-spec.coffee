@@ -10,12 +10,12 @@ describe "CSON", ->
 
   describe ".stringify(object)", ->
     describe "when the object is undefined", ->
-      it "throws an exception", ->
-        expect(-> CSON.stringify()).toThrow()
+      it "returns undefined", ->
+        expect(CSON.stringify(undefined)).toBe undefined
 
     describe "when the object is a function", ->
-      it "throws an exception", ->
-        expect(-> CSON.stringify(-> 'function')).toThrow()
+      it "returns undefined", ->
+        expect(CSON.stringify(-> 'function')).toBe undefined
 
     describe "when the object contains a function", ->
       it "it gets filtered away, when not providing a visitor function", ->
@@ -183,17 +183,6 @@ describe "CSON", ->
 
     describe "when called with a .cson path", ->
       csonPath = path.join(temp.mkdirSync('season-object-dir-'), 'file1.cson')
-
-      describe "when called with an invalid object", ->
-        it "calls back with an error", ->
-          callback = jasmine.createSpy('callback')
-          CSON.writeFile(csonPath, undefined, callback)
-
-          waitsFor ->
-            callback.callCount is 1
-
-          runs ->
-            expect(util.isError(callback.mostRecentCall.args[0])).toBeTruthy()
 
       it "writes the object and calls back", ->
         callback = jasmine.createSpy('callback')

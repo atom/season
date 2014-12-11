@@ -110,7 +110,4 @@ module.exports =
       JSON.stringify(object, undefined, 2)
 
   stringify: (object, visitor, space = 2) ->
-    throw new Error("Cannot stringify undefined object") if object is undefined
-    throw new Error("Cannot stringify function: #{object}") if _.isFunction(object)
-
     CSON.stringify(object, visitor, space)
