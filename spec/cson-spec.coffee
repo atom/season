@@ -19,7 +19,7 @@ describe "CSON", ->
 
     describe "when the object contains a function", ->
       it "it gets filtered away, when not providing a visitor function", ->
-        expect(CSON.stringify(a:  -> 'function')).toBe '{}'
+        expect(CSON.stringify(a: -> 'function')).toBe '{}'
 
     describe "when formatting an undefined key", ->
       it "does not include the key in the formatted CSON", ->
