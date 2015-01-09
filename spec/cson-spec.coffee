@@ -1,5 +1,4 @@
 path = require 'path'
-util = require 'util'
 fs = require 'fs'
 temp = require 'temp'
 CSON = require '../lib/cson'
