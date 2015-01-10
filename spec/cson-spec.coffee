@@ -3,6 +3,12 @@ fs = require 'fs'
 temp = require 'temp'
 CSON = require '../lib/cson'
 
+readFile = (filePath, callback) ->
+  done = jasmine.createSpy('readFile callback')
+  CSON.readFile(path.join(__dirname, 'fixtures', 'empty.json'), done)
+  waitsFor -> done.callCount is 1
+  runs -> callback(done.argsForCall[0]...)
+
 describe "CSON", ->
   beforeEach ->
     CSON.setCacheDir(null)
@@ -228,3 +234,21 @@ describe "CSON", ->
         waitsFor -> sample?
         runs ->
           expect(CSONParser.parse.callCount).toBe 0
+
+  describe "readFileSync", ->
+    it "returns null for files that are all whitespace", ->
+      expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty.cson'))).toBeNull()
+      expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty.json'))).toBeNull()
+      expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty-line.cson'))).toBeNull()
+      expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty-line.json'))).toBeNull()
+
+  describe "readFile", ->
+    it "calls back with null for files that are all whitespace", ->
+      callback = (error, content) ->
+        expect(error).toBeNull()
+        expect(content).toBeNull()
+
+      readFile(path.join(__dirname, 'fixtures', 'empty.cson'), callback)
+      readFile(path.join(__dirname, 'fixtures', 'empty.json'), callback)
+      readFile(path.join(__dirname, 'fixtures', 'empty-line.cson'), callback)
+      readFile(path.join(__dirname, 'fixtures', 'empty-line.json'), callback)

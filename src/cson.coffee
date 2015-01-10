@@ -61,6 +61,7 @@ module.exports =
 
   readFileSync: (objectPath) ->
     contents = fs.readFileSync(objectPath, 'utf8')
+    return null if contents.trim().length is 0
     if csonCache and path.extname(objectPath) is '.cson'
       cachePath = getCachePath(contents)
       if fs.isFileSync(cachePath)
@@ -71,25 +72,25 @@ module.exports =
 
   readFile: (objectPath, callback) ->
     fs.readFile objectPath, 'utf8', (error, contents) =>
-      if error?
-        callback?(error)
-      else
-        if csonCache and path.extname(objectPath) is '.cson'
-          cachePath = getCachePath(contents)
-          fs.stat cachePath, (error, stat) ->
-            if stat?.isFile()
-              fs.readFile cachePath, 'utf8', (error, cached) ->
+      return callback?(null, null) if contents.trim().length is 0
+      return callback?(error) if error?
+
+      if csonCache and path.extname(objectPath) is '.cson'
+        cachePath = getCachePath(contents)
+        fs.stat cachePath, (error, stat) ->
+          if stat?.isFile()
+            fs.readFile cachePath, 'utf8', (error, cached) ->
+              try
+                parsed = JSON.parse(cached)
+              catch error
                 try
-                  parsed = JSON.parse(cached)
-                catch error
-                  try
-                    parseContents(objectPath, cachePath, contents, callback)
-                  return
-                callback?(null, parsed)
-            else
-              parseContents(objectPath, cachePath, contents, callback)
-        else
-          parseContents(objectPath, null, contents, callback)
+                  parseContents(objectPath, cachePath, contents, callback)
+                return
+              callback?(null, parsed)
+          else
+            parseContents(objectPath, cachePath, contents, callback)
+      else
+        parseContents(objectPath, null, contents, callback)
 
   writeFile: (objectPath, object, callback) ->
     try
