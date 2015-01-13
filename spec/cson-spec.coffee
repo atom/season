@@ -269,3 +269,10 @@ describe "CSON", ->
 
       readFile(path.join(__dirname, 'fixtures', 'single-comment.cson'), callback)
       readFile(path.join(__dirname, 'fixtures', 'multi-comment.cson'), callback)
+
+    it "calls back with an error for invalid files", ->
+      callback = (error, content) ->
+        expect(error).not.toBeNull()
+        expect(content).toBeUndefined()
+
+      readFile(path.join(__dirname, 'fixtures', 'invalid.cson'), callback)
