@@ -16,7 +16,7 @@ writeCacheFileSync = (cachePath, object) ->
     fs.writeFileSync(cachePath, JSON.stringify(object))
 
 writeCacheFile = (cachePath, object) ->
-  fs.writeFile(cachePath, JSON.stringify(object))
+  fs.writeFile cachePath, JSON.stringify(object), ->
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
@@ -93,6 +93,8 @@ module.exports =
         parseContents(objectPath, null, contents, callback)
 
   writeFile: (objectPath, object, callback) ->
+    callback ?= ->
+
     try
       contents = @stringifyPath(objectPath, object)
     catch error
