@@ -20,7 +20,13 @@ writeCacheFile = (cachePath, object) ->
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
-    CSON.parse(contents)
+    try
+      CSON.parse(contents)
+    catch error
+      if isAllCommentsAndWhitespace(contents)
+        return null
+      else
+        throw error
   else
     JSON.parse(contents)
 
@@ -28,6 +34,16 @@ parseContentsSync = (objectPath, cachePath, contents) ->
   object = parseObject(objectPath, contents)
   writeCacheFileSync(cachePath, object) if cachePath
   object
+
+isAllCommentsAndWhitespace = (contents) ->
+  lines = contents.split('\n')
+  while lines.length > 0
+    line = lines[0].trim()
+    if line.length is 0 or line[0] is '#'
+      lines.shift()
+    else
+      return false
+  true
 
 parseContents = (objectPath, cachePath, contents, callback) ->
   try

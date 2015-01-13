@@ -260,3 +260,12 @@ describe "CSON", ->
 
       readFile(path.join(__dirname, 'fixtures', 'this-file-does-not-exist.cson'), callback)
       readFile(path.join(__dirname, 'fixtures', 'this-file-does-not-exist.json'), callback)
+
+
+    it "calls back with null for files that are all comments", ->
+      callback = (error, content) ->
+        expect(error).toBeNull()
+        expect(content).toBeNull()
+
+      readFile(path.join(__dirname, 'fixtures', 'single-comment.cson'), callback)
+      readFile(path.join(__dirname, 'fixtures', 'multi-comment.cson'), callback)
