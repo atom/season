@@ -72,8 +72,8 @@ module.exports =
 
   readFile: (objectPath, callback) ->
     fs.readFile objectPath, 'utf8', (error, contents) =>
-      return callback?(null, null) if contents.trim().length is 0
       return callback?(error) if error?
+      return callback?(null, null) if contents.trim().length is 0
 
       if csonCache and path.extname(objectPath) is '.cson'
         cachePath = getCachePath(contents)
