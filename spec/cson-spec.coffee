@@ -5,7 +5,7 @@ CSON = require '../lib/cson'
 
 readFile = (filePath, callback) ->
   done = jasmine.createSpy('readFile callback')
-  CSON.readFile(path.join(__dirname, 'fixtures', 'empty.json'), done)
+  CSON.readFile(filePath, done)
   waitsFor -> done.callCount is 1
   runs -> callback(done.argsForCall[0]...)
 
@@ -252,3 +252,11 @@ describe "CSON", ->
       readFile(path.join(__dirname, 'fixtures', 'empty.json'), callback)
       readFile(path.join(__dirname, 'fixtures', 'empty-line.cson'), callback)
       readFile(path.join(__dirname, 'fixtures', 'empty-line.json'), callback)
+
+    it "calls back with an error for files that do no exist", ->
+      callback = (error, content) ->
+        expect(error).not.toBeNull()
+        expect(content).toBeUndefined()
+
+      readFile(path.join(__dirname, 'fixtures', 'this-file-does-not-exist.cson'), callback)
+      readFile(path.join(__dirname, 'fixtures', 'this-file-does-not-exist.json'), callback)
