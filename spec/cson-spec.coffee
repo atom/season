@@ -12,6 +12,7 @@ readFile = (filePath, callback) ->
 describe "CSON", ->
   beforeEach ->
     CSON.setCacheDir(null)
+    CSON.resetCacheStats()
 
   describe ".stringify(object)", ->
     describe "when the object is undefined", ->
@@ -202,10 +203,10 @@ describe "CSON", ->
   describe "caching", ->
     describe "synchronous reads", ->
       it "caches the contents of the compiled CSON files", ->
-        CSON.resetCacheStats()
         samplePath = path.join(__dirname, 'fixtures', 'sample.cson')
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
+        CSON.resetCacheStats()
         CSONParser = require 'cson-safe'
         spyOn(CSONParser, 'parse').andCallThrough()
 
@@ -228,8 +229,12 @@ describe "CSON", ->
         samplePath = path.join(__dirname, 'fixtures', 'sample.cson')
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
+        CSON.resetCacheStats()
         CSONParser = require 'cson-safe'
         spyOn(CSONParser, 'parse').andCallThrough()
+
+        expect(CSON.getCacheHits()).toBe 0
+        expect(CSON.getCacheMisses()).toBe 0
 
         sample = null
         CSON.readFile samplePath, (error, object) -> sample = object
@@ -237,12 +242,17 @@ describe "CSON", ->
         runs ->
           expect(sample).toEqual {a: 1, b: c: true}
           expect(CSONParser.parse.callCount).toBe 1
+          expect(CSON.getCacheHits()).toBe 0
+          expect(CSON.getCacheMisses()).toBe 1
+
           CSONParser.parse.reset()
           sample = null
           CSON.readFile samplePath, (error, object) -> sample = object
         waitsFor -> sample?
         runs ->
           expect(CSONParser.parse.callCount).toBe 0
+          expect(CSON.getCacheHits()).toBe 1
+          expect(CSON.getCacheMisses()).toBe 1
 
   describe "readFileSync", ->
     it "returns null for files that are all whitespace", ->
@@ -250,6 +260,13 @@ describe "CSON", ->
       expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty.json'))).toBeNull()
       expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty-line.cson'))).toBeNull()
       expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty-line.json'))).toBeNull()
+
+    it "does not increment the cache stats when .json files are read", ->
+      expect(CSON.getCacheHits()).toBe 0
+      expect(CSON.getCacheMisses()).toBe 0
+      CSON.readFileSync(path.join(__dirname, 'fixtures', 'sample.json'))
+      expect(CSON.getCacheHits()).toBe 0
+      expect(CSON.getCacheMisses()).toBe 0
 
   describe "readFile", ->
     it "calls back with null for files that are all whitespace", ->

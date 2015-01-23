@@ -25,7 +25,9 @@ writeCacheFile = (cachePath, object) ->
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
     try
-      CSON.parse(contents)
+      parsed = CSON.parse(contents)
+      stats.misses++
+      return parsed
     catch error
       if isAllCommentsAndWhitespace(contents)
         return null
@@ -41,7 +43,6 @@ parseCacheContents = (contents) ->
 
 parseContentsSync = (objectPath, cachePath, contents) ->
   object = parseObject(objectPath, contents)
-  stats.misses++
   writeCacheFileSync(cachePath, object) if cachePath
   object
 
@@ -58,7 +59,6 @@ isAllCommentsAndWhitespace = (contents) ->
 parseContents = (objectPath, cachePath, contents, callback) ->
   try
     object = parseObject(objectPath, contents)
-    stats.misses++
     writeCacheFile(cachePath, object) if cachePath
     callback?(null, object)
   catch parseError
