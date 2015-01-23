@@ -7,6 +7,10 @@ CSON = require 'cson-safe'
 
 csonCache = null
 
+stats =
+  hits: 0
+  misses: 0
+
 getCachePath = (cson) ->
   digest = crypto.createHash('sha1').update(cson, 'utf8').digest('hex')
   path.join(csonCache, "#{digest}.json")
@@ -30,8 +34,14 @@ parseObject = (objectPath, contents) ->
   else
     JSON.parse(contents)
 
+parseCacheContents = (contents) ->
+  parsed = JSON.parse(contents)
+  stats.hits++
+  parsed
+
 parseContentsSync = (objectPath, cachePath, contents) ->
   object = parseObject(objectPath, contents)
+  stats.misses++
   writeCacheFileSync(cachePath, object) if cachePath
   object
 
@@ -48,6 +58,7 @@ isAllCommentsAndWhitespace = (contents) ->
 parseContents = (objectPath, cachePath, contents, callback) ->
   try
     object = parseObject(objectPath, contents)
+    stats.misses++
     writeCacheFile(cachePath, object) if cachePath
     callback?(null, object)
   catch parseError
@@ -82,7 +93,7 @@ module.exports =
       cachePath = getCachePath(contents)
       if fs.isFileSync(cachePath)
         try
-          return JSON.parse(fs.readFileSync(cachePath, 'utf8'))
+          return parseCacheContents(fs.readFileSync(cachePath, 'utf8'))
 
     parseContentsSync(objectPath, cachePath, contents)
 
@@ -97,7 +108,7 @@ module.exports =
           if stat?.isFile()
             fs.readFile cachePath, 'utf8', (error, cached) ->
               try
-                parsed = JSON.parse(cached)
+                parsed = parseCacheContents(cached)
               catch error
                 try
                   parseContents(objectPath, cachePath, contents, callback)
@@ -130,3 +141,12 @@ module.exports =
 
   stringify: (object, visitor, space = 2) ->
     CSON.stringify(object, visitor, space)
+
+  getCacheHits: -> stats.hits
+
+  getCacheMisses: -> stats.misses
+
+  resetCacheStats: ->
+    stats =
+      hits: 0
+      misses: 0

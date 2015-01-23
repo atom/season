@@ -202,17 +202,26 @@ describe "CSON", ->
   describe "caching", ->
     describe "synchronous reads", ->
       it "caches the contents of the compiled CSON files", ->
+        CSON.resetCacheStats()
         samplePath = path.join(__dirname, 'fixtures', 'sample.cson')
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
         CSONParser = require 'cson-safe'
         spyOn(CSONParser, 'parse').andCallThrough()
 
+        expect(CSON.getCacheHits()).toBe 0
+        expect(CSON.getCacheMisses()).toBe 0
+
         expect(CSON.readFileSync(samplePath)).toEqual {a: 1, b: c: true}
         expect(CSONParser.parse.callCount).toBe 1
+        expect(CSON.getCacheHits()).toBe 0
+        expect(CSON.getCacheMisses()).toBe 1
+
         CSONParser.parse.reset()
         expect(CSON.readFileSync(samplePath)).toEqual {a: 1, b: c: true}
         expect(CSONParser.parse.callCount).toBe 0
+        expect(CSON.getCacheHits()).toBe 1
+        expect(CSON.getCacheMisses()).toBe 1
 
     describe "asynchronous reads", ->
       it "caches the contents of the compiled CSON files", ->
