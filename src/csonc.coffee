@@ -1,7 +1,7 @@
 fs = require 'fs'
 path = require 'path'
 optimist = require 'optimist'
-CSON = require 'cson-safe'
+CSON = require 'cson-parser'
 
 module.exports = (argv=[]) ->
   options = optimist(argv)

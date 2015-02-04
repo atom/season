@@ -136,7 +136,7 @@ describe "CSON", ->
           f: true
 
       cson = CSON.stringify(object)
-      CSONParser = require 'cson-safe'
+      CSONParser = require 'cson-parser'
       evaledObject = CSONParser.parse(cson)
       expect(evaledObject).toEqual object
 
@@ -207,7 +207,7 @@ describe "CSON", ->
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
         CSON.resetCacheStats()
-        CSONParser = require 'cson-safe'
+        CSONParser = require 'cson-parser'
         spyOn(CSONParser, 'parse').andCallThrough()
 
         expect(CSON.getCacheHits()).toBe 0
@@ -230,7 +230,7 @@ describe "CSON", ->
         cacheDir = temp.mkdirSync('cache-dir')
         CSON.setCacheDir(cacheDir)
         CSON.resetCacheStats()
-        CSONParser = require 'cson-safe'
+        CSONParser = require 'cson-parser'
         spyOn(CSONParser, 'parse').andCallThrough()
 
         expect(CSON.getCacheHits()).toBe 0

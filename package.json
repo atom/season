@@ -30,7 +30,7 @@
     "CoffeeScript"
   ],
   "dependencies": {
-    "cson-safe": "^1.0.5",
+    "cson-parser": "^1.0.6",
     "fs-plus": "2.x",
     "optimist": "~0.4.0",
     "underscore-plus": "1.x"

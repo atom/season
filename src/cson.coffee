@@ -3,7 +3,7 @@ path = require 'path'
 
 _ = require 'underscore-plus'
 fs = require 'fs-plus'
-CSON = require 'cson-safe'
+CSON = require 'cson-parser'
 
 csonCache = null
 
