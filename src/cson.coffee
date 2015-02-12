@@ -3,7 +3,7 @@ path = require 'path'
 
 _ = require 'underscore-plus'
 fs = require 'fs-plus'
-CSON = require 'cson-parser'
+CSON = null # defer until used
 
 csonCache = null
 
@@ -24,6 +24,7 @@ writeCacheFile = (cachePath, object) ->
 
 parseObject = (objectPath, contents) ->
   if path.extname(objectPath) is '.cson'
+    CSON ?= require 'cson-parser'
     try
       parsed = CSON.parse(contents)
       stats.misses++
@@ -140,6 +141,7 @@ module.exports =
       JSON.stringify(object, undefined, 2)
 
   stringify: (object, visitor, space = 2) ->
+    CSON ?= require 'cson-parser'
     CSON.stringify(object, visitor, space)
 
   getCacheHits: -> stats.hits
