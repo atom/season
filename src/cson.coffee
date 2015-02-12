@@ -1,7 +1,6 @@
 crypto = require 'crypto'
 path = require 'path'
 
-_ = require 'underscore-plus'
 fs = require 'fs-plus'
 CSON = null # defer until used
 
