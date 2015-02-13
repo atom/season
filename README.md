@@ -1,4 +1,4 @@
-# season - CSON Node module [![Build Status](https://travis-ci.org/atom/season.png?branch=master)](https://travis-ci.org/atom/season)
+# season - CSON Node module [![Build Status](https://travis-ci.org/atom/season.svg?branch=master)](https://travis-ci.org/atom/season)
 
 Read and write CSON/JSON files seamlessly.
 
