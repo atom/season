@@ -5,7 +5,7 @@ CSON = require '../lib/cson'
 
 readFile = (filePath, callback) ->
   done = jasmine.createSpy('readFile callback')
-  CSON.readFile(filePath, done)
+  expect(CSON.readFile(filePath, done)).toBeUndefined()
   waitsFor -> done.callCount is 1
   runs -> callback(done.argsForCall[0]...)
 
@@ -287,7 +287,6 @@ describe "CSON", ->
       readFile(path.join(__dirname, 'fixtures', 'this-file-does-not-exist.cson'), callback)
       readFile(path.join(__dirname, 'fixtures', 'this-file-does-not-exist.json'), callback)
 
-
     it "calls back with null for files that are all comments", ->
       callback = (error, content) ->
         expect(error).toBeNull()
@@ -302,3 +301,32 @@ describe "CSON", ->
         expect(content).toBeUndefined()
 
       readFile(path.join(__dirname, 'fixtures', 'invalid.cson'), callback)
+
+    describe "when an error is thrown by the callback", ->
+      uncaughtListeners = null
+
+      beforeEach ->
+        uncaughtListeners = process.listeners('uncaughtException')
+        process.removeAllListeners('uncaughtException')
+
+      afterEach ->
+        for listener in uncaughtListeners
+          process.on('uncaughtException', listener)
+
+      it "only calls the callback once when it throws an error", ->
+        called = 0
+        callback = ->
+          called++
+          throw new Error('called')
+
+        uncaughtHandler = jasmine.createSpy('uncaughtHandler')
+        process.once('uncaughtException', uncaughtHandler)
+
+        CSON.readFile(path.join(__dirname, 'fixtures', 'sample.cson'), callback)
+
+        waitsFor ->
+          called > 0
+
+        runs ->
+          expect(called).toBe 1
+          expect(uncaughtHandler.callCount).toBe 1

@@ -59,10 +59,13 @@ isAllCommentsAndWhitespace = (contents) ->
 parseContents = (objectPath, cachePath, contents, callback) ->
   try
     object = parseObject(objectPath, contents)
-    writeCacheFile(cachePath, object) if cachePath
-    callback?(null, object)
   catch parseError
     callback?(parseError)
+    return
+
+  writeCacheFile(cachePath, object) if cachePath
+  callback?(null, object)
+  return
 
 module.exports =
   setCacheDir: (cacheDirectory) -> csonCache = cacheDirectory
