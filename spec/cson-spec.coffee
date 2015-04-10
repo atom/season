@@ -140,6 +140,10 @@ describe "CSON", ->
       evaledObject = CSONParser.parse(cson)
       expect(evaledObject).toEqual object
 
+  describe '.parse', ->
+    it 'returns the javascript value', ->
+      expect(CSON.parse 'a: "b"').toEqual a: 'b'
+
   describe ".isObjectPath(objectPath)", ->
     it "returns true if the path has an object extension", ->
       expect(CSON.isObjectPath('/test2.json')).toBe true
