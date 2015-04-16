@@ -146,6 +146,10 @@ module.exports =
     CSON ?= require 'cson-parser'
     CSON.stringify(object, visitor, space)
 
+  parse: (str, reviver) ->
+    CSON ?= require 'cson-parser'
+    CSON.parse(str, reviver)
+
   getCacheHits: -> stats.hits
 
   getCacheMisses: -> stats.misses
