@@ -60,6 +60,7 @@ parseContents = (objectPath, cachePath, contents, callback) ->
   try
     object = parseObject(objectPath, contents)
   catch parseError
+    parseError.path = objectPath
     parseError.message = "#{objectPath}: #{parseError.message}"
     callback?(parseError)
     return
