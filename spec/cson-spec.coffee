@@ -302,6 +302,8 @@ describe "CSON", ->
     it "calls back with an error for invalid files", ->
       callback = (error, content) ->
         expect(error).not.toBeNull()
+        expect(error.path).toEqual path.join(__dirname, 'fixtures', 'invalid.cson')
+        expect(error.message).toContain path.join(__dirname, 'fixtures', 'invalid.cson')
         expect(content).toBeUndefined()
 
       readFile(path.join(__dirname, 'fixtures', 'invalid.cson'), callback)
