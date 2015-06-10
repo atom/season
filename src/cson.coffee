@@ -42,7 +42,13 @@ parseCacheContents = (contents) ->
   parsed
 
 parseContentsSync = (objectPath, cachePath, contents) ->
-  object = parseObject(objectPath, contents)
+  try
+    object = parseObject(objectPath, contents)
+  catch parseError
+    parseError.path ?= objectPath
+    parseError.filename ?= objectPath
+    throw parseError
+
   writeCacheFileSync(cachePath, object) if cachePath
   object
 
@@ -61,6 +67,7 @@ parseContents = (objectPath, cachePath, contents, callback) ->
     object = parseObject(objectPath, contents)
   catch parseError
     parseError.path = objectPath
+    parseError.filename ?= objectPath
     parseError.message = "#{objectPath}: #{parseError.message}"
     callback?(parseError)
     return
