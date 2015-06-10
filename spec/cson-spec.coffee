@@ -265,6 +265,34 @@ describe "CSON", ->
       expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty-line.cson'))).toBeNull()
       expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'empty-line.json'))).toBeNull()
 
+    it "throws errors for invalid .cson files", ->
+      errorPath = path.join(__dirname, 'fixtures', 'syntax-error.cson')
+      parseError = null
+
+      try
+        CSON.readFileSync(errorPath)
+      catch error
+        parseError = error
+
+      expect(parseError.path).toBe errorPath
+      expect(parseError.filename).toBe errorPath
+      expect(parseError.location.first_line).toBe 0
+      expect(parseError.location.first_column).toBe 4
+      expect(parseError.location.last_line).toBe 0
+      expect(parseError.location.last_column).toBe 4
+
+    it "throws errors for invalid .json files", ->
+      errorPath = path.join(__dirname, 'fixtures', 'syntax-error.json')
+      parseError = null
+
+      try
+        CSON.readFileSync(errorPath)
+      catch error
+        parseError = error
+
+      expect(parseError.path).toBe errorPath
+      expect(parseError.filename).toBe errorPath
+
     it "does not increment the cache stats when .json files are read", ->
       expect(CSON.getCacheHits()).toBe 0
       expect(CSON.getCacheMisses()).toBe 0
@@ -300,13 +328,48 @@ describe "CSON", ->
       readFile(path.join(__dirname, 'fixtures', 'multi-comment.cson'), callback)
 
     it "calls back with an error for invalid files", ->
+      done = false
+
       callback = (error, content) ->
+        done = true
         expect(error).not.toBeNull()
         expect(error.path).toEqual path.join(__dirname, 'fixtures', 'invalid.cson')
         expect(error.message).toContain path.join(__dirname, 'fixtures', 'invalid.cson')
         expect(content).toBeUndefined()
 
       readFile(path.join(__dirname, 'fixtures', 'invalid.cson'), callback)
+
+      waitsFor -> done
+
+    it "calls back with location information for .cson files with syntax errors", ->
+      done = false
+      errorPath = path.join(__dirname, 'fixtures', 'syntax-error.cson')
+
+      callback = (parseError, content) ->
+        done = true
+        expect(parseError.path).toBe errorPath
+        expect(parseError.filename).toBe errorPath
+        expect(parseError.location.first_line).toBe 0
+        expect(parseError.location.first_column).toBe 4
+        expect(parseError.location.last_line).toBe 0
+        expect(parseError.location.last_column).toBe 4
+
+      readFile(errorPath, callback)
+
+      waitsFor -> done
+
+    it "calls back with path information for .json files with syntax errors", ->
+      done = false
+      errorPath = path.join(__dirname, 'fixtures', 'syntax-error.json')
+
+      callback = (parseError, content) ->
+        done = true
+        expect(parseError.path).toBe errorPath
+        expect(parseError.filename).toBe errorPath
+
+      readFile(errorPath, callback)
+
+      waitsFor -> done
 
     describe "when an error is thrown by the callback", ->
       uncaughtListeners = null
