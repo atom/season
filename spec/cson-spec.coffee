@@ -277,9 +277,7 @@ describe "CSON", ->
       expect(parseError.path).toBe errorPath
       expect(parseError.filename).toBe errorPath
       expect(parseError.location.first_line).toBe 0
-      expect(parseError.location.first_column).toBe 4
-      expect(parseError.location.last_line).toBe 0
-      expect(parseError.location.last_column).toBe 4
+      expect(parseError.location.first_column).toBe 3
 
     it "throws errors for invalid .json files", ->
       errorPath = path.join(__dirname, 'fixtures', 'syntax-error.json')
@@ -350,9 +348,7 @@ describe "CSON", ->
         expect(parseError.path).toBe errorPath
         expect(parseError.filename).toBe errorPath
         expect(parseError.location.first_line).toBe 0
-        expect(parseError.location.first_column).toBe 4
-        expect(parseError.location.last_line).toBe 0
-        expect(parseError.location.last_column).toBe 4
+        expect(parseError.location.first_column).toBe 3
 
       readFile(errorPath, callback)
 
