@@ -304,6 +304,10 @@ describe "CSON", ->
           CSON.readFileSync(path.join(__dirname, 'fixtures', 'duplicate-keys.cson'), allowDuplicateKeys: false)
         ).toThrow("Duplicate key 'foo'")
 
+        expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'sample.cson'), allowDuplicateKeys: false)).toEqual({
+          a: 1, b: {c: true}
+        })
+
         expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'duplicate-keys.cson'))).toEqual({
           foo: 3, bar: 2
         })

@@ -172,7 +172,7 @@ module.exports =
       misses: 0
 
 detectDuplicateKeys = (key, value) ->
-  if this.hasOwnProperty(key)
+  if this.hasOwnProperty(key) and this[key] isnt value
     throw new Error("Duplicate key '#{key}'")
   else
     value
