@@ -21,11 +21,11 @@ writeCacheFileSync = (cachePath, object) ->
 writeCacheFile = (cachePath, object) ->
   fs.writeFile cachePath, JSON.stringify(object), ->
 
-parseObject = (objectPath, contents) ->
+parseObject = (objectPath, contents, options) ->
   if path.extname(objectPath) is '.cson'
     CSON ?= require 'cson-parser'
     try
-      parsed = CSON.parse(contents)
+      parsed = CSON.parse(contents, detectDuplicateKeys if options?.allowDuplicateKeys is false)
       stats.misses++
       return parsed
     catch error
@@ -41,9 +41,9 @@ parseCacheContents = (contents) ->
   stats.hits++
   parsed
 
-parseContentsSync = (objectPath, cachePath, contents) ->
+parseContentsSync = (objectPath, cachePath, contents, options) ->
   try
-    object = parseObject(objectPath, contents)
+    object = parseObject(objectPath, contents, options)
   catch parseError
     parseError.path ?= objectPath
     parseError.filename ?= objectPath
@@ -62,9 +62,9 @@ isAllCommentsAndWhitespace = (contents) ->
       return false
   true
 
-parseContents = (objectPath, cachePath, contents, callback) ->
+parseContents = (objectPath, cachePath, contents, options, callback) ->
   try
-    object = parseObject(objectPath, contents)
+    object = parseObject(objectPath, contents, options)
   catch parseError
     parseError.path = objectPath
     parseError.filename ?= objectPath
@@ -98,7 +98,7 @@ module.exports =
 
     null
 
-  readFileSync: (objectPath) ->
+  readFileSync: (objectPath, options) ->
     contents = fs.readFileSync(objectPath, 'utf8')
     return null if contents.trim().length is 0
     if csonCache and path.extname(objectPath) is '.cson'
@@ -107,9 +107,12 @@ module.exports =
         try
           return parseCacheContents(fs.readFileSync(cachePath, 'utf8'))
 
-    parseContentsSync(objectPath, cachePath, contents)
+    parseContentsSync(objectPath, cachePath, contents, options)
 
-  readFile: (objectPath, callback) ->
+  readFile: (objectPath, options, callback) ->
+    if arguments.length < 3
+      callback = options
+      options = null
     fs.readFile objectPath, 'utf8', (error, contents) =>
       return callback?(error) if error?
       return callback?(null, null) if contents.trim().length is 0
@@ -123,13 +126,13 @@ module.exports =
                 parsed = parseCacheContents(cached)
               catch error
                 try
-                  parseContents(objectPath, cachePath, contents, callback)
+                  parseContents(objectPath, cachePath, contents, options, callback)
                 return
               callback?(null, parsed)
           else
-            parseContents(objectPath, cachePath, contents, callback)
+            parseContents(objectPath, cachePath, contents, options, callback)
       else
-        parseContents(objectPath, null, contents, callback)
+        parseContents(objectPath, null, contents, options, callback)
 
   writeFile: (objectPath, object, callback) ->
     callback ?= ->
@@ -167,3 +170,9 @@ module.exports =
     stats =
       hits: 0
       misses: 0
+
+detectDuplicateKeys = (key, value) ->
+  if this.hasOwnProperty(key)
+    throw new Error("Duplicate key '#{key}'")
+  else
+    value

@@ -298,6 +298,16 @@ describe "CSON", ->
       expect(CSON.getCacheHits()).toBe 0
       expect(CSON.getCacheMisses()).toBe 0
 
+    describe "when the allowDuplicateKeys option is set to false", ->
+      it "throws errors if objects contain duplicate keys", ->
+        expect(->
+          CSON.readFileSync(path.join(__dirname, 'fixtures', 'duplicate-keys.cson'), allowDuplicateKeys: false)
+        ).toThrow("Duplicate key 'foo'")
+
+        expect(CSON.readFileSync(path.join(__dirname, 'fixtures', 'duplicate-keys.cson'))).toEqual({
+          foo: 3, bar: 2
+        })
+
   describe "readFile", ->
     it "calls back with null for files that are all whitespace", ->
       callback = (error, content) ->
@@ -366,6 +376,30 @@ describe "CSON", ->
       readFile(errorPath, callback)
 
       waitsFor -> done
+
+    describe "when the allowDuplicateKeys option is set to false", ->
+      it "calls back with an error if objects contain duplicate keys", ->
+        fixturePath = path.join(__dirname, 'fixtures', 'duplicate-keys.cson')
+        done = false
+
+        runs ->
+          CSON.readFile fixturePath, {allowDuplicateKeys: false}, (err, content) ->
+            expect(err.message).toContain("Duplicate key 'foo'")
+            expect(content).toBeUndefined()
+            done = true
+
+        waitsFor -> done
+
+        runs ->
+          done = false
+          CSON.readFile fixturePath, (err, content) ->
+            expect(content).toEqual({
+              foo: 3,
+              bar: 2
+            })
+            done = true
+
+        waitsFor -> done
 
     describe "when an error is thrown by the callback", ->
       uncaughtListeners = null
