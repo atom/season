@@ -1,4 +1,5 @@
-# season - CSON Node module [![Build Status](https://travis-ci.org/atom/season.svg?branch=master)](https://travis-ci.org/atom/season)
+# season - CSON Node module
+[![macOS Build Status](https://travis-ci.org/atom/season.svg?branch=master)](https://travis-ci.org/atom/season) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/v3bth3ooq5q8k8lx/branch/master?svg=true)](https://ci.appveyor.com/project/Atom/season) [![Dependency Status](https://david-dm.org/atom/season.svg)](https://david-dm.org/atom/season)
 
 Read and write CSON/JSON files seamlessly.
 
