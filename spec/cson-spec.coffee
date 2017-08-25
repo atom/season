@@ -2,6 +2,7 @@ path = require 'path'
 fs = require 'fs'
 temp = require 'temp'
 CSON = require '../lib/cson'
+parser = require 'cson-parser'
 
 readFile = (filePath, callback) ->
   done = jasmine.createSpy('readFile callback')
@@ -433,3 +434,35 @@ describe "CSON", ->
         runs ->
           expect(called).toBe 1
           expect(uncaughtHandler.callCount).toBe 1
+
+  describe "when options are provided for the underlying fs call", ->
+
+    it "passes options to the readFileSync call", ->
+      spyOn(fs, 'readFileSync').andReturn "{}"
+      spyOn(parser, 'parse').andCallThrough()
+
+      CSON.readFileSync("/foo/blarg.cson", {encoding: 'cuneiform', allowDuplicateKeys: false})
+
+      expect(fs.readFileSync).toHaveBeenCalledWith "/foo/blarg.cson", {encoding: 'cuneiform'}
+      expect(parser.parse.calls[0].args[0]).toEqual "{}"
+      expect(typeof parser.parse.calls[0].args[1]).toEqual "function"
+
+    it "passes options to the readFile call", ->
+      called = 0
+      callback = -> called++
+
+      spyOn(fs, 'readFile').andCallFake (filePath, fsOptions, callback) ->
+        expect(filePath).toEqual "/bar/blarg.cson"
+        expect(fsOptions).toEqual {encoding: 'cuneiform'}
+
+        callback(null, "{}")
+
+      CSON.readFile("/bar/blarg.cson", {encoding: 'cuneiform', allowDuplicateKeys: false}, callback)
+
+      expect(fs.readFile).toHaveBeenCalled()
+      expect(parser.parse.calls[0].args[0]).toEqual "{}"
+      expect(typeof parser.parse.calls[0].args[1]).toEqual "function"
+
+    it "passes options to the writeFileSync call"
+
+    it "passes options to the writeFile call"
