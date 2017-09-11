@@ -147,7 +147,10 @@ module.exports =
       else
         parseContents(objectPath, null, contents, parseOptions, callback)
 
-  writeFile: (objectPath, object, callback) ->
+  writeFile: (objectPath, object, options, callback) ->
+    if arguments.length < 4
+      callback = options
+      options = {}
     callback ?= ->
 
     try
@@ -156,10 +159,10 @@ module.exports =
       callback(error)
       return
 
-    fs.writeFile(objectPath, "#{contents}\n", callback)
+    fs.writeFile(objectPath, "#{contents}\n", options, callback)
 
-  writeFileSync: (objectPath, object) ->
-    fs.writeFileSync(objectPath, "#{@stringifyPath(objectPath, object)}\n")
+  writeFileSync: (objectPath, object, options = undefined) ->
+    fs.writeFileSync(objectPath, "#{@stringifyPath(objectPath, object)}\n", options)
 
   stringifyPath: (objectPath, object, visitor, space) ->
     if path.extname(objectPath) is '.cson'
