@@ -451,6 +451,7 @@ describe "CSON", ->
       called = 0
       callback = -> called++
 
+      spyOn(parser, 'parse').andCallThrough()
       spyOn(fs, 'readFile').andCallFake (filePath, fsOptions, callback) ->
         expect(filePath).toEqual "/bar/blarg.cson"
         expect(fsOptions).toEqual {encoding: 'cuneiform'}
