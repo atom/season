@@ -1,7 +1,8 @@
 path = require 'path'
-fs = require 'fs'
+fs = require 'fs-plus'
 temp = require 'temp'
 CSON = require '../lib/cson'
+parser = require 'cson-parser'
 
 readFile = (filePath, callback) ->
   done = jasmine.createSpy('readFile callback')
@@ -433,3 +434,56 @@ describe "CSON", ->
         runs ->
           expect(called).toBe 1
           expect(uncaughtHandler.callCount).toBe 1
+
+  describe "when options are provided for the underlying fs call", ->
+
+    it "passes options to the readFileSync call", ->
+      spyOn(fs, 'readFileSync').andReturn "{}"
+      spyOn(parser, 'parse').andCallThrough()
+
+      CSON.readFileSync("/foo/blarg.cson", {encoding: 'cuneiform', allowDuplicateKeys: false})
+
+      expect(fs.readFileSync).toHaveBeenCalledWith "/foo/blarg.cson", {encoding: 'cuneiform'}
+      expect(parser.parse.calls[0].args[0]).toEqual "{}"
+      expect(typeof parser.parse.calls[0].args[1]).toEqual "function"
+
+    it "passes options to the readFile call", ->
+      called = 0
+      callback = -> called++
+
+      spyOn(parser, 'parse').andCallThrough()
+      spyOn(fs, 'readFile').andCallFake (filePath, fsOptions, callback) ->
+        expect(filePath).toEqual "/bar/blarg.cson"
+        expect(fsOptions).toEqual {encoding: 'cuneiform'}
+
+        callback(null, "{}")
+
+      cb = jasmine.createSpy 'callback'
+      CSON.readFile("/bar/blarg.cson", {encoding: 'cuneiform', allowDuplicateKeys: false}, cb)
+
+      expect(fs.readFile).toHaveBeenCalled()
+      expect(parser.parse.calls[0].args[0]).toEqual "{}"
+      expect(typeof parser.parse.calls[0].args[1]).toEqual "function"
+      expect(cb).toHaveBeenCalledWith null, {}
+
+    it "passes options to the writeFileSync call", ->
+      spyOn(fs, 'writeFileSync').andCallFake (filePath, payload, fileOptions) ->
+        expect(filePath).toEqual "/stuff/wat.cson"
+        expect(fileOptions).toEqual {mode: 0o755}
+
+      CSON.writeFileSync("/stuff/wat.cson", {data: 'yep'}, {mode: 0o755})
+
+      expect(fs.writeFileSync).toHaveBeenCalled()
+      expect(fs.writeFileSync.calls[0].args[2]).toEqual {mode: 0o755}
+
+    it "passes options to the writeFile call", ->
+      spyOn(fs, 'writeFile').andCallFake (filePath, payload, fileOptions, callback) ->
+        expect(filePath).toEqual "/eh/stuff.cson"
+        expect(fileOptions).toEqual {flag: 'x'}
+        callback(null)
+
+      cb = jasmine.createSpy 'callback'
+      CSON.writeFile("/eh/stuff.cson", {}, {flag: 'x'}, cb)
+
+      expect(fs.writeFile).toHaveBeenCalled()
+      expect(cb).toHaveBeenCalledWith null

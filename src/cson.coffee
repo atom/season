@@ -98,8 +98,14 @@ module.exports =
 
     null
 
-  readFileSync: (objectPath, options) ->
-    contents = fs.readFileSync(objectPath, 'utf8')
+  readFileSync: (objectPath, options = {}) ->
+    parseOptions =
+      allowDuplicateKeys: options.allowDuplicateKeys
+    delete options.allowDuplicateKeys
+
+    fsOptions = Object.assign({encoding: 'utf8'}, options)
+
+    contents = fs.readFileSync(objectPath, fsOptions)
     return null if contents.trim().length is 0
     if csonCache and path.extname(objectPath) is '.cson'
       cachePath = getCachePath(contents)
@@ -107,13 +113,20 @@ module.exports =
         try
           return parseCacheContents(fs.readFileSync(cachePath, 'utf8'))
 
-    parseContentsSync(objectPath, cachePath, contents, options)
+    parseContentsSync(objectPath, cachePath, contents, parseOptions)
 
   readFile: (objectPath, options, callback) ->
     if arguments.length < 3
       callback = options
-      options = null
-    fs.readFile objectPath, 'utf8', (error, contents) =>
+      options = {}
+
+    parseOptions =
+      allowDuplicateKeys: options.allowDuplicateKeys
+    delete options.allowDuplicateKeys
+
+    fsOptions = Object.assign({encoding: 'utf8'}, options)
+
+    fs.readFile objectPath, fsOptions, (error, contents) =>
       return callback?(error) if error?
       return callback?(null, null) if contents.trim().length is 0
 
@@ -126,15 +139,18 @@ module.exports =
                 parsed = parseCacheContents(cached)
               catch error
                 try
-                  parseContents(objectPath, cachePath, contents, options, callback)
+                  parseContents(objectPath, cachePath, contents, parseOptions, callback)
                 return
               callback?(null, parsed)
           else
-            parseContents(objectPath, cachePath, contents, options, callback)
+            parseContents(objectPath, cachePath, contents, parseOptions, callback)
       else
-        parseContents(objectPath, null, contents, options, callback)
+        parseContents(objectPath, null, contents, parseOptions, callback)
 
-  writeFile: (objectPath, object, callback) ->
+  writeFile: (objectPath, object, options, callback) ->
+    if arguments.length < 4
+      callback = options
+      options = {}
     callback ?= ->
 
     try
@@ -143,10 +159,10 @@ module.exports =
       callback(error)
       return
 
-    fs.writeFile(objectPath, "#{contents}\n", callback)
+    fs.writeFile(objectPath, "#{contents}\n", options, callback)
 
-  writeFileSync: (objectPath, object) ->
-    fs.writeFileSync(objectPath, "#{@stringifyPath(objectPath, object)}\n")
+  writeFileSync: (objectPath, object, options = undefined) ->
+    fs.writeFileSync(objectPath, "#{@stringifyPath(objectPath, object)}\n", options)
 
   stringifyPath: (objectPath, object, visitor, space) ->
     if path.extname(objectPath) is '.cson'
