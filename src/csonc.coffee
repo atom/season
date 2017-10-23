@@ -1,10 +1,11 @@
 fs = require 'fs'
 path = require 'path'
-optimist = require 'optimist'
+yargs = require 'yargs'
 CSON = require 'cson-parser'
 
 module.exports = (argv=[]) ->
-  options = optimist(argv)
+
+  options = yargs(argv)
   options.usage """
     Usage: csonc [options] cson_file --output json_file
            csonc [options] < cson_file [> json_file]
